@@ -18,9 +18,155 @@ Provide a class diagram for the provided code as you read through it.  For the c
 
 Create a class diagram for the classes you plan to create. This is your initial design, and it is okay if it changes. Your starting points are the interfaces. 
 
+```mermaid
+classDiagram
+    class BGArenaPlanner {
+        -DEFAULt_COLLECTION: String
+        -BGArenaPlanner()
+        +main(arg: String[]) void
+    }
+    
+    class ConsoleApp {
+        -IN: Scanner
+        -DEFAULT_FILENAME: String
+        -RND: Random
+        -current: Scanner
+        -gameList: IGameList
+        -planner: IPlanner
+        +ConsoleApp(gameList IGameList, planner IPlanner)
+        +start() void
+        -rendomNumber() void
+        -processHelp() void
+        -processFilter() void
+        -processListCommands() void
+        -printCurrentList() void
+        -nextCommand() ConsoleText
+        -remainder() String
+        -getInput(String,Object[]) String
+        -printOutput(String, Object[]) void
+        -printFilterStream(Stream<BoardGame>, GameData) void
+    }
+
+    class BoardGame {
+        -name String
+        -id int
+        -minPlayers int
+        -maxPlayers int
+        -maxPlayTime int
+        -minPlayTime int
+        -difficulty double
+        -rank int
+        -averageRating double
+        -yearPublished int
+        +BoardGame(name String, id int, minPlayers int, maxPlayers int, minPlayTime int, maxPlayTime int, difficulty double, rank int, averageRating double, yearPublished int)
+        +getName() String
+        +getId() int
+        +getMinPlayers() int
+        +getMaxPlayers() int
+        +getMaxPlayTime() int
+        +getMinPlayTime() int
+        +getDifficulty() double
+        +getRank() int
+        +getRating() double
+        +getYearPublished() int
+        +toStringWithInfo(GameData) String
+        +toString() String
+        +equals(Object) boolean
+        +hashCode() int
+        +main$(String[]) void
+    }
+
+    class GameData {
+        <<enumeration>>
+        NAME(objectname)
+        ID(objectid)
+        RATING(average)
+        DIFFICULTY(avgweight)
+        RANK(rank)
+        MIN_PLAYERS(minplayers)
+        MAX_PLAYERS(maxplayers)
+        MIN_TIME(minplaytime)
+        MAX_TIME(maxplaytime)
+        YEAR(yearpublished)
+        -columnName String
+        +GameData(columnName String)
+        +getColumnName() String
+        +fromColumnName$(String) GameData
+        +fromString$(String) GameData
+    }
+    
+    class GameList {
+        +getGameNames() List<String>
+        +clear() void
+        +count() int
+        +saveGame(String filename) void
+        +addToList(String str, Stream<BoardGame> filtered) void
+        +removeFromList(String str) void
+    }
+
+    class GamesLoader {
+        -DELIMITER String
+        -GamesLoader()
+        +loadGamesFile(String) Set<BoardGame>
+        -toBoardGame(String, Map<GameData,Integer>) BoardGame
+        -processHeader(String) Map<GameData,Integer>
+    }
+    
+    class IGameList {
+        <<interface>>
+        ADD_ALL String
+        +getGameNames() List<String>
+        +clear() void
+        +count() int
+        +saveGame(filename String) void
+        +addToList(str String, filtered Stream<BoardGame>) void
+        +removeFromList(str String) void
+    }
+    
+    class IPlanner {
+        <<interface>>
+        +filter(filter String) Stream~BoardGame~
+        +filter(filter String, sortOn GameData) Stream~BoardGame~
+        +filter(filter String, sortOn GameData, ascending boolean) Stream~BoardGame~
+        +reset() void
+    }
+    
+    class Operations {
+        <<enumeration>>
+        -operator String
+        +getOperator() String
+        +fromOperator(operator String) Operations
+        +getOperatorFromStr(str String) Operations
+    }
+
+    class Planner {
+        -games Set<BoardGame>
+        +Planner(games Set<BoardGame>)
+        +filter(filter String) Stream<BoardGame>
+        +filter(filter String, sortOn GameData) Stream<BoardGame>
+        +filter(filter String, sortOn GameData, ascending boolean) Stream<BoardGame>
+        +reset() void
+    }
+
+    BGArenaPlanner --> ConsoleApp
+    BGArenaPlanner --> GameList
+    BGArenaPlanner --> Planner
+    ConsoleApp o-- IGameList : has
+    ConsoleApp o-- IPlanner : has
+    GameList ..|> IGameList : implements
+    Planner ..|> IPlanner : implements
+    Planner --> BoardGame
+    GameList --> BoardGame
+    GamesLoader --> BoardGame
+    BoardGame --> GameData : uses
+    Planner --> GameData : uses
+    Planner --> Operations : uses
+    GamesLoader --> GameData :uses
+    
 
 
 
+```
 
 ## (INITIAL DESIGN): Tests to Write - Brainstorm
 
@@ -36,10 +182,15 @@ Write a test (in english) that you can picture for the class diagram you have cr
 
 You should feel free to number your brainstorm. 
 
-1. Test 1..
-2. Test 2..
-
-
+1. Test 1: Test `Planner` that filter() properly filters by name with contains operator
+2. Test 2: Test `Planner` that filter() properly handles numeric comparisons
+3. Test 3: Test `Planner` that filter() properly sorts results in ascending order
+4. Test 4: Test `Planner` that reset() properly clears all filters
+5. Test 5: Test `BoardGame` that getName() returns correct name
+6. Test 6: Test `BoardGame` that hashCode() is consistent with equals()
+7. Test 7: Test `BoardGame` that toStringWithInfo() properly formats output for different GameData types
+8. Test 8: Test `GameList` that count() returns 0 when newly created
+9. Test 9: Test `GameList` that addToList() properly adds games 
 
 
 ## (FINAL DESIGN): Class Diagram
