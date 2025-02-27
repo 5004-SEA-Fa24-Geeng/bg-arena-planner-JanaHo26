@@ -5,14 +5,19 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.io.TempDir;
+
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 
 class GameListTest {
+    private Set<BoardGame> games;
 
     @BeforeEach
     void setUp() {
@@ -30,33 +35,140 @@ class GameListTest {
 
     @Test
     void getGameNames() {
+        IGameList list = new GameList();
+        // add some games
+        list.addToList("all", games.stream());
+
+        // check if the list of game names is sorted alphabetically
+        List<String> names = list.getGameNames();
+        assertEquals(games.size(), names.size());
+        assertEquals("Chess", names.get(1));
+        assertEquals("Go", names.get(2));
     }
 
     @Test
     void clear() {
+        IGameList list = new GameList();
+        // add some games
+        list.addToList("all", games.stream());
+        assertEquals(4, list.count());
+
+        // clear list
+        list.clear();
+        assertEquals(0, list.count());
+        assertTrue(list.getGameNames().isEmpty());
     }
 
     @Test
     void count() {
+        IGameList list = new GameList();
+        // empty at the beginning
+        assertEquals(0, list.count());
+
+        // add a game
+        list.addToList("1", games.stream());
+        assertEquals(1, list.count());
+
+        // add more games
+        list.addToList("2", games.stream());
+        assertEquals(2, list.count());
+
+        // 0 after clear
+        list.clear();
+        assertEquals(0, list.count());
     }
 
     @Test
-    void saveGame() {
+    void saveGame() throws IOException {
+        // create temp
+        Path tempDir = Files.createTempDirectory("temp");
+        IGameList list = new GameList();
+
+        list.addToList("1-3", games.stream());
+        assertEquals(3, list.count());
+
+        Path gamefile = tempDir.resolve("Savedgames.txt");
+        list.saveGame(gamefile.toString());
+
+
+        List<String> lines = Files.readAllLines(gamefile);
+        assertEquals(3, lines.size());
+        assertTrue(lines.contains("Go"));
+        assertTrue(lines.contains("Go Fish"));
+        assertTrue(lines.contains("GoRami"));
     }
 
     @Test
     void testAddSingleGameToListByIndex() {
-        //String str, Stream<BoardGame> filtered
-        IGameList list1 = new GameList();
-        list1.addToList("1", games.stream());
-        assertEquals(1, list1.count());
-        System.out.println(list1.getGameNames());
+        IGameList list = new GameList();
+        list.addToList("1", games.stream());
+        assertEquals(1, list.count());
+        System.out.println(list.getGameNames());
     }
 
     @Test
     void addRangeOfGamesToList() {
-        IGameList list1 = new GameList();
-        list1.addToList("1-3", games.stream());
-        //assert
+        IGameList list = new GameList();
+        list.addToList("1-3", games.stream());
+        assertEquals(3, list.count());
+        List<String> names = list.getGameNames();
+        assertTrue(names.contains("17 days"));
+        assertTrue(names.contains("Chess"));
+        assertTrue(names.contains("Go"));
+    }
+    @Test
+    void addAllGamesToList() {
+        IGameList list = new GameList();
+        list.addToList("ADD_ALL", games.stream());
+        assertEquals(games.size(), list.count());
+    }
+
+    @Test
+    void removeGameFromList() {
+        IGameList list = new GameList();
+        list.addToList("ADD_ALL", games.stream());
+        assertEquals(8, list.count());
+
+        // remove by index
+        list.removeFromList("2");
+        assertEquals(7, list.count());
+        assertFalse(list.getGameNames().contains("Go"));
+    }
+
+    @Test
+    void removeAllGamesFromList() {
+        IGameList list = new GameList();
+        list.addToList("ADD_ALL", games.stream());
+        assertEquals(8, list.count());
+
+        list.removeFromList("ADD_ALL");
+        assertEquals(0, list.count());
+    }
+
+    @Test
+    void removeOutOfBoundsRange() {
+        IGameList list = new GameList();
+        list.addToList("ADD_ALL", games.stream());
+        assertEquals("8", list.count());
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            list.removeFromList("5-10");
+        });
+
+        assertEquals("Out of bounds", exception.getMessage());
+    }
+
+    @Test
+    void removeNonExistentGame() {
+        IGameList list = new GameList();
+        list.addToList("ADD_ALL", games.stream());
+        assertEquals(8, list.count());
+
+        // try to remove non existent game
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            list.removeFromList("AAA");
+        });
+
+        assertEquals("Non existent game", exception.getMessage());
     }
 }
