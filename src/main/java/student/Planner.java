@@ -100,7 +100,7 @@ public class Planner implements IPlanner {
         }
 
         // Remove the spaces.
-        filter = filter.replaceAll("\\s", "");
+        filter = filter.replaceAll("\\s" + operator.getOperator() + "\\s*", operator.getOperator());
 
         // Split the filter string into column name and value
         String[] parts = filter.split(operator.getOperator());

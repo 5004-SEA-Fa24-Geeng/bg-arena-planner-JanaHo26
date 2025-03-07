@@ -169,4 +169,11 @@ public class TestPlanner {
         List<BoardGame> filtered = planner.filter("", GameData.NAME, true).toList();
         assertEquals(8, filtered.size());
     }
+
+    @Test
+    public void testFilterByNameContains() {
+        List<BoardGame> filtered = planner.filter("name==Go Fish").toList();
+        assertEquals(1, filtered.size());
+        assertEquals("Go Fish", filtered.get(0).getName());
+    }
 }
