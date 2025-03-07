@@ -11,6 +11,9 @@ import java.io.IOException;
  * This class provides functionality to add, remove, clear, and save board games.
  */
 public class GameList implements IGameList {
+    /**
+     * A set of board games stored in the collection.
+     */
     private Set<BoardGame> listOfGames;
 
     /**
@@ -27,7 +30,6 @@ public class GameList implements IGameList {
      */
     @Override
     public List<String> getGameNames() {
-        // convert a collection of games into a list of names, sorted alphabetically
         return listOfGames.stream()
                 .map(BoardGame::getName)
                 .sorted(String.CASE_INSENSITIVE_ORDER)
@@ -66,7 +68,6 @@ public class GameList implements IGameList {
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            // write all games into the file
             for (BoardGame game : listOfGames) {
                 writer.write(game.toString());
                 writer.newLine();
@@ -76,13 +77,15 @@ public class GameList implements IGameList {
         }
     }
 
-
     /**
-     * Adds one or more games from the filtered stream to the collection. Games can be added by index, by name, or as a range of indices.
+     * Adds one or more games from the filtered stream to the collection.
+     * Games can be added by index, by name, or as a range of indices.
      *
      * @param str      the string to parse and add games to the list.
      * @param filtered the filtered list to use as a basis for adding.
-     * @throws IllegalArgumentException if the input string is invalid, the filtered list is empty, or the specified game cannot be found.
+     * @throws IllegalArgumentException if the input string is invalid,
+     *                                  the filtered list is empty,
+     *                                  or the specified game cannot be found.
      */
     @Override
     public void addToList(String str, Stream<BoardGame> filtered) throws IllegalArgumentException {
@@ -90,7 +93,6 @@ public class GameList implements IGameList {
             throw new IllegalArgumentException("Empty string");
         }
 
-        // remove blank and turn to lower case
         str = str.trim().toLowerCase();
         List<BoardGame> filteredList = filtered.collect(Collectors.toList());
 
@@ -98,20 +100,11 @@ public class GameList implements IGameList {
             throw new IllegalArgumentException("Empty list");
         }
 
-        // if the string added is "ADD_ALL", add all games and end the function
-        if (str.equalsIgnoreCase("add_all")) {
+        if (str.equalsIgnoreCase("add_all") || str.equals("all")) {
             listOfGames.addAll(filteredList);
             return;
         }
 
-        // Special case for "all" which is used in one of the tests
-        if (str.equals("all")) {
-            listOfGames.addAll(filteredList);
-            return;
-        }
-
-        // for example, 1-3 will become ["1","3"]
-        // check if it's range input
         if (str.contains("-")) {
             String[] range = str.split("-");
             if (range.length != 2) {
@@ -122,33 +115,19 @@ public class GameList implements IGameList {
                 int start = Integer.parseInt(range[0]);
                 int end = Integer.parseInt(range[1]);
 
-                if (start < 1 || end < 1 || start > filteredList.size()) {
+                if (start < 1 || end < 1 || start > filteredList.size() || end > filteredList.size() || start > end) {
                     throw new IllegalArgumentException("Invalid range");
                 }
 
-                // Match the test case for "1-3" to include "17 days", "Chess", and "Go"
-                // This is a special case to make the test pass
-                if (start == 1 && end == 3) {
-                    for (BoardGame game : filteredList) {
-                        String name = game.getName();
-                        if (name.equals("17 days") || name.equals("Chess") || name.equals("Go")) {
-                            listOfGames.add(game);
-                        }
-                    }
-                } else {
-                    // Normal range handling
-                    for (int i = start; i <= end && i <= filteredList.size(); i++) {
-                        listOfGames.add(filteredList.get(i - 1)); // i-1 because list start from 0
-                    }
+                for (int i = start; i <= end; i++) {
+                    listOfGames.add(filteredList.get(i - 1)); // Adjust for 0-based index
                 }
-
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid range");
             }
             return;
         }
 
-        // 'str' as if it's a single index like "2"
         try {
             int index = Integer.parseInt(str);
 
@@ -159,10 +138,9 @@ public class GameList implements IGameList {
             listOfGames.add(filteredList.get(index - 1));
             return;
         } catch (NumberFormatException e) {
-            // not number, try to search by name
             boolean found = false;
             for (BoardGame game : filteredList) {
-                if (game.getName().toLowerCase().equals(str)) {
+                if (game.getName().trim().equalsIgnoreCase(str)) {
                     listOfGames.add(game);
                     found = true;
                     break;
@@ -198,11 +176,9 @@ public class GameList implements IGameList {
             return;
         }
 
-        // make sure the index won't be influenced by the original order of listOfGames
-        List<BoardGame> gameslist = new ArrayList<>(listOfGames);
-        gameslist.sort(Comparator.comparing(BoardGame::getName));
+        List<BoardGame> gamesList = new ArrayList<>(listOfGames);
+        gamesList.sort(Comparator.comparing(BoardGame::getName));
 
-        // range like "1-3"
         if (str.contains("-")) {
             String[] range = str.split("-");
             if (range.length != 2) {
@@ -211,15 +187,15 @@ public class GameList implements IGameList {
 
             try {
                 int start = Integer.parseInt(range[0]);
-                int end = Integer.parseInt(range[1]);   // convert a range string into a number
+                int end = Integer.parseInt(range[1]);
 
-                if (start < 1 || end < 1 || start > gameslist.size() || end > gameslist.size() || start > end) {
+                if (start < 1 || end < 1 || start > gamesList.size() || end > gamesList.size() || start > end) {
                     throw new IllegalArgumentException("Invalid range");
                 }
 
                 Set<BoardGame> toRemove = new HashSet<>();
                 for (int i = start; i <= end; i++) {
-                    toRemove.add(gameslist.get(i - 1));
+                    toRemove.add(gamesList.get(i - 1));
                 }
                 listOfGames.removeAll(toRemove);
             } catch (NumberFormatException e) {
@@ -228,19 +204,17 @@ public class GameList implements IGameList {
             return;
         }
 
-        // single index
         try {
             int index = Integer.parseInt(str);
-            if (index < 1 || index > gameslist.size()) {
+            if (index < 1 || index > gamesList.size()) {
                 throw new IllegalArgumentException("Invalid range");
             }
-            listOfGames.remove(gameslist.get(index - 1));
+            listOfGames.remove(gamesList.get(index - 1));
             return;
         } catch (NumberFormatException e) {
-            // not a number, search by name
             boolean found = false;
             for (BoardGame game : new ArrayList<>(listOfGames)) {
-                if (game.getName().toLowerCase().equals(str)) {
+                if (game.getName().trim().equalsIgnoreCase(str)) {
                     listOfGames.remove(game);
                     found = true;
                     break;
@@ -252,5 +226,4 @@ public class GameList implements IGameList {
             }
         }
     }
-
 }

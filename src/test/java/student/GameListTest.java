@@ -22,7 +22,7 @@ class GameListTest {
 
     @BeforeEach
     void setUp() {
-        games = new HashSet<>();
+        games = new LinkedHashSet<>();
         games.add(new BoardGame("17 days", 6, 1, 8, 70, 70, 9.0, 600, 9.0, 2005));
         games.add(new BoardGame("Chess", 7, 2, 2, 10, 20, 10.0, 700, 10.0, 2006));
         games.add(new BoardGame("Go", 1, 2, 5, 30, 30, 8.0, 100, 7.5, 2000));
@@ -133,6 +133,7 @@ class GameListTest {
         assertTrue(names.contains("Chess"));
         assertTrue(names.contains("Go"));
     }
+
     @Test
     void addAllGamesToList() {
         IGameList list = new GameList();
@@ -188,4 +189,7 @@ class GameListTest {
 
         assertEquals("Game not found", exception.getMessage());
     }
+
+
+
 }

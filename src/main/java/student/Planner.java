@@ -44,7 +44,8 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Filters the board games by the given filter string and sorts the results by the specified field in ascending order.
+     * Filters the board games by the given filter string
+     * and sorts the results by the specified field in ascending order.
      *
      * @param filter The filter to apply to the board games.
      * @param sortOn The column to sort the results on.
@@ -56,7 +57,8 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Filters the board games by the given filter string and sorts the results by the specified filed in the specified direction.
+     * Filters the board games by the given filter string
+     * and sorts the results by the specified filed in the specified direction.
      *
      * @param filter The filter to apply to the board games.
      * @param sortOn The column to sort the results on.

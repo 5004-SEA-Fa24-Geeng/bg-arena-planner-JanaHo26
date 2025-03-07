@@ -6,6 +6,12 @@ import java.util.Comparator;
  * Provides sorting strategies for BoardGame objects, and implements the Strategy pattern for different sorting methods.
  */
 public class GameSorter {
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
+    private GameSorter() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
+    }
 
     /**
      * Gets a comparator for the specified field and direction.

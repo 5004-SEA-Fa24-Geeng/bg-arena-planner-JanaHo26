@@ -7,6 +7,7 @@ public final class Filters {
 
     /**
      * Main filter method that routes to the appropriate filter method based on column type.
+     *
      * @param game the board game to check.
      * @param column the column to filter on.
      * @param op the operation to perform.
@@ -43,6 +44,11 @@ public final class Filters {
 
     /**
      * Filters string data based on the specified operation.
+     *
+     * @param gameData the string data to filter.
+     * @param op the operation to perform.
+     * @param value the value to filter against.
+     * @return true if the string data matches the filter, false otherwise.
      */
     public static boolean filterString(String gameData, Operations op, String value) {
         if (gameData == null || value == null) {
@@ -64,6 +70,11 @@ public final class Filters {
 
     /**
      * Filters numeric integer data based on the specified operation.
+     *
+     * @param gameData the integer data to filter.
+     * @param op the operation to perform.
+     * @param value the value to filter against.
+     * @return true if the integer data matches the filter, false otherwise.
      */
     public static boolean filterInt(int gameData, Operations op, String value) {
         try {
@@ -92,6 +103,11 @@ public final class Filters {
 
     /**
      * Filters double-precision floating point data based on the specified operation.
+     *
+     * @param gameData the double data to filter.
+     * @param op the operation to perform.
+     * @param value the value to filter against.
+     * @return true if the double data matches the filter, false otherwise.
      */
     public static boolean filterDouble(double gameData, Operations op, String value) {
         try {
