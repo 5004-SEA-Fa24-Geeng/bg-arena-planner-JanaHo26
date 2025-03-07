@@ -189,7 +189,5 @@ class GameListTest {
 
         assertEquals("Game not found", exception.getMessage());
     }
-
-
-
 }
+

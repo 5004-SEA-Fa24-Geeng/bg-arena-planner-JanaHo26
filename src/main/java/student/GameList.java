@@ -157,7 +157,8 @@ public class GameList implements IGameList {
      * Removes one or more games from the collection.
      *
      * @param str The string to parse and remove games from the list.
-     * @throws IllegalArgumentException if the input string is invalid, the game list is empty, or the specified game cannot be found.
+     * @throws IllegalArgumentException if the input string is invalid, the game list is empty,
+     *                          or the specified game cannot be found.
      */
     @Override
     public void removeFromList(String str) throws IllegalArgumentException {
@@ -171,7 +172,7 @@ public class GameList implements IGameList {
             throw new IllegalArgumentException("Game list is empty");
         }
 
-        if (str.equalsIgnoreCase("add_all")) {
+        if (str.equalsIgnoreCase("add_all") || str.equals("all")) {
             clear();
             return;
         }
@@ -227,3 +228,4 @@ public class GameList implements IGameList {
         }
     }
 }
+
