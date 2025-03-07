@@ -62,6 +62,10 @@ public final class Filters {
                 return !gameData.equalsIgnoreCase(value);
             case CONTAINS:
                 return gameData.toLowerCase().contains(value.toLowerCase());
+            case GREATER_THAN:
+                return gameData.compareToIgnoreCase(value) > 0;  // Compare strings lexicographically
+            case LESS_THAN:
+                return gameData.compareToIgnoreCase(value) < 0;  // Compare strings lexicographically
             default:
                 return false;
         }

@@ -90,4 +90,5 @@ public class FilterTest {
         assertTrue(Filters.filter(game, GameData.YEAR, Operations.EQUALS, "2000"));
     }
 
+
 }
