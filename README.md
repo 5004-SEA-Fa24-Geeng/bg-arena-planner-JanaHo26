@@ -4,8 +4,9 @@ Name: Jana Ho
 Github Account name: JanaHo26
 
 Link to Assignment on Github: (copy and paste the link to your assignment repo here)
+https://github.com/5004-SEA-Fa24-Geeng/bg-arena-planner-JanaHo26.git
 
-How many hours did it take you to complete this assignment (estimate)?
+How many hours did it take you to complete this assignment (estimate)? 9
 
 Did you collaborate with any other students/TAs/Professors? If so, tell us who and in what
 capacity.

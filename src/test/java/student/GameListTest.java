@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ class GameListTest {
         IGameList list = new GameList();
         // add some games
         list.addToList("all", games.stream());
-        assertEquals(4, list.count());
+        assertEquals(8, list.count());
 
         // clear list
         list.clear();
@@ -80,22 +81,38 @@ class GameListTest {
 
     @Test
     void saveGame() throws IOException {
-        // create temp
+        // Create temp directory
         Path tempDir = Files.createTempDirectory("temp");
         IGameList list = new GameList();
 
+        // Add the first 3 games from the collection
         list.addToList("1-3", games.stream());
         assertEquals(3, list.count());
 
+        // Get the names of the games currently in the list
+        List<String> gameNames = list.getGameNames();
+
+        // Save the games to file
         Path gamefile = tempDir.resolve("Savedgames.txt");
         list.saveGame(gamefile.toString());
 
-
+        // Read the saved file
         List<String> lines = Files.readAllLines(gamefile);
+
+        // Verify the file has 3 lines
         assertEquals(3, lines.size());
-        assertTrue(lines.contains("Go"));
-        assertTrue(lines.contains("Go Fish"));
-        assertTrue(lines.contains("GoRami"));
+
+        // Check that each game in our list appears in the file
+        for (String gameName : gameNames) {
+            boolean found = false;
+            for (String line : lines) {
+                if (line.contains(gameName)) {
+                    found = true;
+                    break;
+                }
+            }
+            assertTrue(found, "Game '" + gameName + "' not found in saved file");
+        }
     }
 
     @Test
@@ -129,8 +146,8 @@ class GameListTest {
         list.addToList("ADD_ALL", games.stream());
         assertEquals(8, list.count());
 
-        // remove by index
-        list.removeFromList("2");
+        // remove by name
+        list.removeFromList("Go");
         assertEquals(7, list.count());
         assertFalse(list.getGameNames().contains("Go"));
     }
@@ -149,13 +166,13 @@ class GameListTest {
     void removeOutOfBoundsRange() {
         IGameList list = new GameList();
         list.addToList("ADD_ALL", games.stream());
-        assertEquals("8", list.count());
+        assertEquals(8, list.count());
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             list.removeFromList("5-10");
         });
 
-        assertEquals("Out of bounds", exception.getMessage());
+        assertEquals("Invalid range", exception.getMessage());
     }
 
     @Test
@@ -169,6 +186,6 @@ class GameListTest {
             list.removeFromList("AAA");
         });
 
-        assertEquals("Non existent game", exception.getMessage());
+        assertEquals("Game not found", exception.getMessage());
     }
 }

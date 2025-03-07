@@ -28,7 +28,7 @@ public class FilterTest {
 
         assertTrue(Filters.filterInt(5, Operations.GREATER_THAN, "4"));
         assertFalse(Filters.filterInt(5, Operations.GREATER_THAN, "5"));
-        assertTrue(Filters.filterInt(5, Operations.GREATER_THAN, "6"));
+        assertFalse(Filters.filterInt(5, Operations.GREATER_THAN, "6"));
 
         assertFalse(Filters.filterInt(5, Operations.LESS_THAN, "4"));
         assertFalse(Filters.filterInt(5, Operations.LESS_THAN, "5"));
@@ -36,11 +36,11 @@ public class FilterTest {
 
         assertTrue(Filters.filterInt(5, Operations.GREATER_THAN_EQUALS, "5"));
         assertFalse(Filters.filterInt(5, Operations.GREATER_THAN_EQUALS, "6"));
-        assertTrue(Filters.filterInt(5, Operations.LESS_THAN_EQUALS, "4"));
+        assertFalse(Filters.filterInt(5, Operations.LESS_THAN_EQUALS, "4"));
 
         assertTrue(Filters.filterInt(5, Operations.LESS_THAN_EQUALS, "5"));
-        assertTrue(Filters.filterInt(5, Operations.GREATER_THAN_EQUALS, "6"));
-        assertFalse(Filters.filterInt(5, Operations.GREATER_THAN_EQUALS, "4"));
+        assertFalse(Filters.filterInt(5, Operations.GREATER_THAN_EQUALS, "6"));
+        assertTrue(Filters.filterInt(5, Operations.GREATER_THAN_EQUALS, "4"));
     }
 
 

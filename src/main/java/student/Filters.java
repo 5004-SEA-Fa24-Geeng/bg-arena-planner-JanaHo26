@@ -4,6 +4,15 @@ public final class Filters {
     private Filters() {
     }
 
+
+    /**
+     * Main filter method that routes to the appropriate filter method based on column type.
+     * @param game the board game to check.
+     * @param column the column to filter on.
+     * @param op the operation to perform.
+     * @param value the value to filter against.
+     * @return true if the game matches the filter, false otherwise.
+     */
     public static boolean filter(BoardGame game, GameData column,
                                  Operations op, String value) {
 
@@ -32,6 +41,9 @@ public final class Filters {
         }
     }
 
+    /**
+     * Filters string data based on the specified operation.
+     */
     public static boolean filterString(String gameData, Operations op, String value) {
         if (gameData == null || value == null) {
             return false;
@@ -50,23 +62,26 @@ public final class Filters {
 
     }
 
+    /**
+     * Filters numeric integer data based on the specified operation.
+     */
     public static boolean filterInt(int gameData, Operations op, String value) {
         try {
             int numValue = Integer.parseInt(value);
 
             switch (op) {
+                case GREATER_THAN_EQUALS:  // first check >=
+                    return gameData >= numValue;
+                case LESS_THAN_EQUALS:   // first check <=
+                    return gameData <= numValue;
+                case GREATER_THAN:    // then check >
+                    return gameData > numValue;
+                case LESS_THAN:     // then check
+                    return gameData < numValue;
                 case EQUALS:
                     return gameData == numValue;
                 case NOT_EQUALS:
                     return gameData != numValue;
-                case GREATER_THAN:
-                    return gameData > numValue;
-                case LESS_THAN:
-                    return gameData < numValue;
-                case GREATER_THAN_EQUALS:
-                    return gameData >= numValue;
-                case LESS_THAN_EQUALS:
-                    return gameData <= numValue;
                 default:
                     return false;
             }
@@ -75,23 +90,26 @@ public final class Filters {
         }
     }
 
+    /**
+     * Filters double-precision floating point data based on the specified operation.
+     */
     public static boolean filterDouble(double gameData, Operations op, String value) {
         try {
             double numValue = Double.parseDouble(value);
 
             switch (op) {
-                case EQUALS:
-                    return gameData == numValue;
-                case NOT_EQUALS:
-                    return gameData != numValue;
-                case GREATER_THAN:
-                    return gameData > numValue;
-                case LESS_THAN:
-                    return gameData < numValue;
                 case GREATER_THAN_EQUALS:
                     return gameData >= numValue;
                 case LESS_THAN_EQUALS:
                     return gameData <= numValue;
+                case GREATER_THAN:
+                    return gameData > numValue;
+                case LESS_THAN:
+                    return gameData < numValue;
+                case EQUALS:
+                    return gameData == numValue;
+                case NOT_EQUALS:
+                    return gameData != numValue;
                 default:
                     return false;
             }
