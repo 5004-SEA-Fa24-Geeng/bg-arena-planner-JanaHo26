@@ -73,7 +73,7 @@ public class GameList implements IGameList {
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new RuntimeException("Could not save game", e);
+            System.err.println("Warning: Could not save to file: " + filename + " - " + e.getMessage());
         }
     }
 
